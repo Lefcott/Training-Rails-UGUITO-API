@@ -20,4 +20,8 @@ class Note < ApplicationRecord
   enum type: { review: 0, critique: 1 }
 
   self.inheritance_column = :_type_disabled
+
+  def word_count
+    content.scan(/[\p{Alpha}\-']+/).length
+  end
 end
