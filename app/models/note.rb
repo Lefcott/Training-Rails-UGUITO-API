@@ -13,9 +13,10 @@
 #
 class Note < ApplicationRecord
   belongs_to :user
-  has_one :utilty, through: :user
+  has_one :utility, through: :user
 
   enum type: { review: 0, critique: 1 }
 
   self.inheritance_column = :_type_disabled
 end
+

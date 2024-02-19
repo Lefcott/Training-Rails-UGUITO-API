@@ -1,6 +1,6 @@
 class HealthCheckController < HealthCheck::HealthCheckController
   # This overwrites the original HealthCheckController from the health_check gem, in order to add
-  # a custom check agaist the utilty's API health check. Original controller:
+  # a custom check agaist the utility's API health check. Original controller:
   # https://github.com/ianheggie/health_check/blob/rails5/lib/health_check/health_check_controller.rb
   rescue_from ActiveRecord::RecordNotFound, with: :render_nothing_not_found
 
