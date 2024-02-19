@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :note do
-    title { "MyString" }
-    content { "MyString" }
+    title { Faker::Book.title }
+    content { Faker::Lorem.paragraphs(number: 3).join("\n") }
     type { 1 }
-    user { nil }
+    user
   end
 end
