@@ -14,7 +14,7 @@ class Note < ApplicationRecord
   belongs_to :user
   has_one :utility, through: :user
 
-  validates :title, :content, :type, presence: true
+  validates :user_id, :title, :content, :type, presence: true
 
   enum type: { review: 0, critique: 1 }
 
