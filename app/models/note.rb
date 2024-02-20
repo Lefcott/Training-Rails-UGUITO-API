@@ -25,8 +25,8 @@ class Note < ApplicationRecord
   end
 
   def content_length
-    return :short if word_count <= utility.short_content_length
-    return :medium if word_count <= utility.medium_content_length
-    :long
+    return 'short' if word_count <= utility.short_content_length
+    return 'medium' if word_count <= utility.medium_content_length
+    'long'
   end
 end
