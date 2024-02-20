@@ -53,4 +53,48 @@ RSpec.describe Note, type: :model do
       expect(subject.content_length).to eq 'long'
     end
   end
+
+  describe 'valid_word_count' do
+    describe 'type: review' do
+      before do
+        subject.type = :review
+      end
+
+      it 'returns true for a word count less than 60' do
+        subject.content = 'word ' * 59
+        expect(subject.valid_word_count).to be true
+      end
+
+      it 'returns true for a word count of 60' do
+        subject.content = 'word ' * 60
+        expect(subject.valid_word_count).to be true
+      end
+
+      it 'returns false for a word count greater than 60' do
+        subject.content = 'word ' * 61
+        expect(subject.valid_word_count).to be false
+      end
+    end
+
+    describe 'type: critique' do
+      before do
+        subject.type = :critique
+      end
+
+      it 'returns true for a word count less than 60' do
+        subject.content = 'word ' * 59
+        expect(subject.valid_word_count).to be true
+      end
+
+      it 'returns true for a word count of 60' do
+        subject.content = 'word ' * 60
+        expect(subject.valid_word_count).to be true
+      end
+
+      it 'returns true for a word count greater than 60' do
+        subject.content = 'word ' * 61
+        expect(subject.valid_word_count).to be true
+      end
+    end
+  end
 end

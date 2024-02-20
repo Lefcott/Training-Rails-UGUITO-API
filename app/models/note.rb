@@ -15,6 +15,7 @@ class Note < ApplicationRecord
   has_one :utility, through: :user
 
   validates :user_id, :title, :content, :type, presence: true
+  validate :valid_word_count
 
   enum type: { review: 0, critique: 1 }
 
@@ -28,5 +29,9 @@ class Note < ApplicationRecord
     return 'short' if word_count <= utility.short_content_length
     return 'medium' if word_count <= utility.medium_content_length
     'long'
+  end
+
+  def valid_word_count
+    content.nil? || word_count <= 60 || type != 'review'
   end
 end
