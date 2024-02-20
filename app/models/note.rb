@@ -7,7 +7,6 @@
 #  content    :string           not null
 #  type       :integer          not null
 #  user_id    :bigint(8)        not null
-#  utility_id :bigint(8)        not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

@@ -80,11 +80,9 @@ ActiveRecord::Schema.define(version: 2024_02_16_205022) do
     t.string "content", null: false
     t.integer "type", null: false
     t.bigint "user_id", null: false
-    t.bigint "utility_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_notes_on_user_id"
-    t.index ["utility_id"], name: "index_notes_on_utility_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -122,6 +120,5 @@ ActiveRecord::Schema.define(version: 2024_02_16_205022) do
   add_foreign_key "books", "users"
   add_foreign_key "books", "utilities"
   add_foreign_key "notes", "users"
-  add_foreign_key "notes", "utilities"
   add_foreign_key "users", "utilities"
 end
