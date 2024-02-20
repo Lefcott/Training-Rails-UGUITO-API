@@ -24,4 +24,10 @@ class Note < ApplicationRecord
   def word_count
     content.scan(/[\p{Alpha}\-']+/).length
   end
+
+  def content_length
+    return :short if word_count <= utility.short_content_length
+    return :medium if word_count <= utility.medium_content_length
+    :long
+  end
 end

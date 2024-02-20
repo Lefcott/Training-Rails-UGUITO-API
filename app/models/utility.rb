@@ -15,6 +15,8 @@
 #  jsonb                                :jsonb
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  short_content_length                 :integer          default(50)
+#  medium_content_length                :integer          default(100)
 #
 class Utility < ApplicationRecord
   include EntityWithCode
@@ -28,7 +30,6 @@ class Utility < ApplicationRecord
   validates :name, :type, presence: true
 
   store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
-  self.inheritance_column = :_type_disabled
 
   def generate_entity_code
     return if code.present? && !code.to_i.zero?
