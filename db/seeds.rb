@@ -22,11 +22,17 @@ FactoryBot.create_list(:user, 20, utility: north_utility,
 FactoryBot.create_list(:user, 20, utility: south_utility,
                                   password: '12345678', password_confirmation: '12345678')
 
-FactoryBot.create(:user, utility: south_utility, email: 'test_south@widergy.com',
+south_utility_user = FactoryBot.create(:user, utility: south_utility, email: 'test_south@widergy.com',
                          password: '12345678', password_confirmation: '12345678')
 
-FactoryBot.create(:user, utility: north_utility, email: 'test_north@widergy.com',
+north_utility_user = FactoryBot.create(:user, utility: north_utility, email: 'test_north@widergy.com',
                          password: '12345678', password_confirmation: '12345678')
+
+# Notes
+FactoryBot.create(:note, user: south_utility_user, :title: 'Test', :content: 'This is a review.', type: :review)
+FactoryBot.create(:note, user: south_utility_user, :title: 'Test', :content: 'This is a critique.', type: :critique)
+FactoryBot.create(:note, user: north_utility_user, :title: 'Test', :content: 'This is a review.', type: :review)
+FactoryBot.create(:note, user: north_utility_user, :title: 'Test', :content: 'This is a critique.', type: :critique)
 
 User.all.find_each do |user|
   random_books_amount = [1, 2, 3].sample
