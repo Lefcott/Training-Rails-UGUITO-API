@@ -59,7 +59,7 @@ RSpec.describe Note, type: :model do
       subject.utility.short_content_length = 50
     end
 
-    describe 'with type: review' do
+    describe 'for note with type: review' do
       before do
         subject.type = :review
       end
@@ -83,7 +83,7 @@ RSpec.describe Note, type: :model do
       end
     end
 
-    describe 'with type: critique' do
+    describe 'for note with type: critique' do
       before do
         subject.type = :critique
       end
