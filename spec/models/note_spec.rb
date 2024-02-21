@@ -79,7 +79,7 @@ RSpec.describe Note, type: :model do
       it 'fails for a word count greater than 50' do
         subject.content = 'word ' * 51
         subject.valid_word_count
-        expect(subject.errors[:content]).to include(I18n.t('note.word_count_validation'))
+        expect(subject.errors[:content]).to include(I18n.t('note.word_count_validation', max_words: 50))
       end
     end
 

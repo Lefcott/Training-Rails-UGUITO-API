@@ -31,7 +31,7 @@
 
 es:
   note:
-    word_count_validation: "es inválido. No puede contener 60 palabras o más para el tipo :review"
+    word_count_validation: "es inválido. No puede contener más de %{max_words} palabras para el tipo :review"
   activerecord:
     errors:
       messages:
