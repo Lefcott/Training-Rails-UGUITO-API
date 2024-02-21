@@ -32,6 +32,7 @@ class Utility < ApplicationRecord
   attr_accessor :short_content_length, :medium_content_length
 
   store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
+  self.inheritance_column = :_type_disabled
 
   def after_initialize
     @short_content_length = 50
