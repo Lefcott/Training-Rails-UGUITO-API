@@ -35,7 +35,7 @@ en:
   activerecord:
     errors:
       messages:
-        blank: "%{attribute} is required"
+        blank: "is required"
       models:
         note:
           attributes:
