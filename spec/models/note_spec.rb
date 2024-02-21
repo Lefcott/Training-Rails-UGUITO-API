@@ -55,45 +55,55 @@ RSpec.describe Note, type: :model do
   end
 
   describe 'valid_word_count' do
-    describe 'type: review' do
+    before do
+      subject.utility.short_content_length = 50
+    end
+
+    describe 'with type: review' do
       before do
         subject.type = :review
       end
 
-      it 'returns true for a word count less than 60' do
-        subject.content = 'word ' * 59
-        expect(subject.valid_word_count).to be true
+      it 'succeeds for short word count less than 50' do
+        subject.content = 'word ' * 49
+        subject.valid_word_count
+        expect(subject.errors[:content]).to be_empty
       end
 
-      it 'returns true for a word count of 60' do
-        subject.content = 'word ' * 60
-        expect(subject.valid_word_count).to be true
+      it 'succeeds for a word count of 50' do
+        subject.content = 'word ' * 50
+        subject.valid_word_count
+        expect(subject.errors[:content]).to be_empty
       end
 
-      it 'returns false for a word count greater than 60' do
-        subject.content = 'word ' * 61
-        expect(subject.valid_word_count).to be false
+      it 'fails for a word count greater than 50' do
+        subject.content = 'word ' * 51
+        subject.valid_word_count
+        expect(subject.errors[:content]).to include(I18n.t('note.word_count_validation'))
       end
     end
 
-    describe 'type: critique' do
+    describe 'with type: critique' do
       before do
         subject.type = :critique
       end
 
-      it 'returns true for a word count less than 60' do
-        subject.content = 'word ' * 59
-        expect(subject.valid_word_count).to be true
+      it 'succeeds for a word count less than 50' do
+        subject.content = 'word ' * 49
+        subject.valid_word_count
+        expect(subject.errors[:content]).to be_empty
       end
 
-      it 'returns true for a word count of 60' do
-        subject.content = 'word ' * 60
-        expect(subject.valid_word_count).to be true
+      it 'succeeds for a word count of 50' do
+        subject.content = 'word ' * 50
+        subject.valid_word_count
+        expect(subject.errors[:content]).to be_empty
       end
 
-      it 'returns true for a word count greater than 60' do
-        subject.content = 'word ' * 61
-        expect(subject.valid_word_count).to be true
+      it 'succeeds for a word count greater than 50' do
+        subject.content = 'word ' * 51
+        subject.valid_word_count
+        expect(subject.errors[:content]).to be_empty
       end
     end
   end

@@ -30,4 +30,15 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 es:
-  hello: "Hola Mundo!"
+  note:
+    word_count_validation: "es inválido. No puede contener 60 palabras o más para el tipo :review"
+  activerecord:
+    errors:
+      messages:
+        blank: "%{attribute} es requerido"
+      models:
+        note:
+          attributes:
+            type:
+              inclusion: "es inválido. Debe ser 'review' o 'critique'."
+            valid_word_count: "Funcaaa"

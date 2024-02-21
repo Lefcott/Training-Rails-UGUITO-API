@@ -14,7 +14,8 @@ class Note < ApplicationRecord
   belongs_to :user
   has_one :utility, through: :user
 
-  validates :user_id, :title, :content, :type, presence: true
+  validates :user_id, :title, :content, presence: true
+  validates :type, presence: true, inclusion: { in: %w[review critique] }
   validate :valid_word_count
 
   enum type: { review: 0, critique: 1 }
@@ -26,12 +27,13 @@ class Note < ApplicationRecord
   end
 
   def content_length
-    return 'short' if word_count <= utility.short_content_length
-    return 'medium' if word_count <= utility.medium_content_length
+    return 'short' if word_count <= (utility&.short_content_length || 50)
+    return 'medium' if word_count <= (utility&.medium_content_length || 100)
     'long'
   end
 
   def valid_word_count
-    content.nil? || word_count <= 60 || type != 'review'
+    valid = content.nil? || content_length == 'short' || type != 'review'
+    errors.add(:content, I18n.t('note.word_count_validation')) unless valid
   end
 end
