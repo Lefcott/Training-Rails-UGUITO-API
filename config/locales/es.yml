@@ -41,4 +41,3 @@ es:
           attributes:
             type:
               inclusion: "es inválido. Debe ser 'review' o 'critique'."
-            valid_word_count: "Funcaaa"
