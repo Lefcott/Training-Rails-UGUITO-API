@@ -15,14 +15,14 @@ RSpec.describe Note, type: :model do
     expect(subject).to be_valid
   end
 
-  describe 'word_count' do
+  describe '#word_count' do
     it 'returns the correct number of words' do
       subject.content = 'it has four words'
       expect(subject.word_count).to equal 4
     end
   end
 
-  describe 'content_length' do
+  describe '#content_length' do
     before do
       subject.utility.short_content_length = 50
       subject.utility.medium_content_length = 100
@@ -54,7 +54,7 @@ RSpec.describe Note, type: :model do
     end
   end
 
-  describe 'valid_word_count' do
+  describe '#valid_word_count' do
     before do
       subject.utility.short_content_length = 50
     end
