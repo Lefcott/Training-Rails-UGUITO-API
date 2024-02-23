@@ -57,4 +57,31 @@ describe Api::V1::NotesController, type: :controller do
       end
     end
   end
+
+  describe 'GET #show' do
+    let(:expected) { ShowNoteSerializer.new(note, root: false).to_json }
+    let(:user) { create(:user) }
+
+    context 'when fetching a valid note' do
+      let(:note) { create(:note, user: user) }
+
+      before { get :show, params: { id: note.id } }
+
+      it 'responds with the note json' do
+        expect(response.body).to eq(expected)
+      end
+
+      it 'responds with 200 status' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when fetching an invalid note' do
+      before { get :show, params: { id: Faker::Number.number } }
+
+      it 'responds with 404 status' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end
