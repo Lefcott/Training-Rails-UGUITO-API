@@ -16,7 +16,7 @@ class Note < ApplicationRecord
 
   validates :user_id, :title, :content, presence: true
   validates :type, presence: true, inclusion: { in: %w[review critique] }
-  validate :valid_word_count
+  validate :validate_word_count
 
   enum type: { review: 0, critique: 1 }
 
@@ -32,7 +32,7 @@ class Note < ApplicationRecord
     'long'
   end
 
-  def valid_word_count
+  def validate_word_count
     valid = content.nil? || content_length == 'short' || type != 'review'
     max_words = utility&.short_content_length || 50
     errors.add :content, I18n.t('note.word_count_validation', max_words: max_words) unless valid
