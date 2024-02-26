@@ -65,6 +65,7 @@ RSpec.describe Note, type: :model do
   describe '#validate_word_count' do
     before do
       subject.utility.short_content_length = 50
+      subject.utility.medium_content_length = 100
     end
 
     describe 'for note with type: review' do
