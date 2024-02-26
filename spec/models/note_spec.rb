@@ -64,7 +64,7 @@ RSpec.describe Note, type: :model do
     end
   end
 
-  describe '#valid_word_count' do
+  describe '#validate_word_count' do
     before do
       subject.utility.short_content_length = 50
     end
@@ -77,7 +77,7 @@ RSpec.describe Note, type: :model do
       context 'when count is less than 50' do
         it 'succeeds' do
           subject.content = 'word ' * 49
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to be_empty
         end
       end
@@ -85,7 +85,7 @@ RSpec.describe Note, type: :model do
       context 'when word count is 50' do
         it 'succeeds' do
           subject.content = 'word ' * 50
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to be_empty
         end
       end
@@ -93,7 +93,7 @@ RSpec.describe Note, type: :model do
       context 'when word count is greater than 50' do
         it 'fails' do
           subject.content = 'word ' * 51
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to include(I18n.t('note.word_count_validation', max_words: 50))
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe Note, type: :model do
       context 'when word count is less than 50' do
         it 'succeeds' do
           subject.content = 'word ' * 49
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to be_empty
         end
       end
@@ -115,7 +115,7 @@ RSpec.describe Note, type: :model do
       context 'when word count is 50' do
         it 'succeeds' do
           subject.content = 'word ' * 50
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to be_empty
         end
       end
@@ -123,7 +123,7 @@ RSpec.describe Note, type: :model do
       context 'when word count is greater than 50' do
         it 'succeeds' do
           subject.content = 'word ' * 51
-          subject.valid_word_count
+          subject.validate_word_count
           expect(subject.errors[:content]).to be_empty
         end
       end
