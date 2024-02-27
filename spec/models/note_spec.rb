@@ -115,13 +115,9 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#validate_word_count' do
-    subject(:note) { create(:note, utility: north_utility) }
+    subject(:note) { create(:note, type: :review, utility: north_utility) }
 
     describe 'for note with type: review' do
-      before do
-        subject.type = :review
-      end
-
       context 'when count is less than 50' do
         it 'succeeds' do
           subject.content = 'word ' * 49
