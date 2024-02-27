@@ -115,30 +115,30 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#validate_word_count' do
-    subject(:note) { create(:note, type: :review, utility: north_utility) }
+    subject(:note) { build(:note, type: :review, utility: north_utility, content: content) }
 
     describe 'for note with type: review' do
       context 'when count is less than 50' do
+        let(:content) { 'word ' * 49 }
+
         it 'succeeds' do
-          subject.content = 'word ' * 49
-          subject.validate_word_count
-          expect(subject.errors[:content]).to be_empty
+          expect { subject.save! }.not_to raise_error
         end
       end
 
       context 'when word count is 50' do
+        let(:content) { 'word ' * 50 }
+
         it 'succeeds' do
-          subject.content = 'word ' * 50
-          subject.validate_word_count
-          expect(subject.errors[:content]).to be_empty
+          expect { subject.save! }.not_to raise_error
         end
       end
 
       context 'when word count is greater than 50' do
+        let(:content) { 'word ' * 51 }
+
         it 'fails' do
-          subject.content = 'word ' * 51
-          subject.validate_word_count
-          expect(subject.errors[:content]).to include(I18n.t('note.word_count_validation', max_words: 50))
+          expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /#{Regexp.escape(I18n.t('note.word_count_validation', max_words: 50))}/)
         end
       end
     end
@@ -149,26 +149,26 @@ RSpec.describe Note, type: :model do
       end
 
       context 'when word count is less than 50' do
+        let(:content) { 'word ' * 49 }
+
         it 'succeeds' do
-          subject.content = 'word ' * 49
-          subject.validate_word_count
-          expect(subject.errors[:content]).to be_empty
+          expect { subject.save! }.not_to raise_error
         end
       end
 
       context 'when word count is 50' do
+        let(:content) { 'word ' * 50 }
+
         it 'succeeds' do
-          subject.content = 'word ' * 50
-          subject.validate_word_count
-          expect(subject.errors[:content]).to be_empty
+          expect { subject.save! }.not_to raise_error
         end
       end
 
       context 'when word count is greater than 50' do
+        let(:content) { 'word ' * 51 }
+
         it 'succeeds' do
-          subject.content = 'word ' * 51
-          subject.validate_word_count
-          expect(subject.errors[:content]).to be_empty
+          expect { subject.save! }.not_to raise_error
         end
       end
     end
