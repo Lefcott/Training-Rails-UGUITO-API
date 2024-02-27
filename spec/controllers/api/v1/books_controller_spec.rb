@@ -27,8 +27,8 @@ describe Api::V1::BooksController, type: :controller do
       end
 
       context 'when fetching books with page and page size params' do
-        let(:page)            { 1 }
-        let(:page_size)       { 2 }
+        let(:page) { 1 }
+        let(:page_size) { 2 }
         let(:books_expected) { user_books.first(2) }
 
         before { get :index, params: { page: page, page_size: page_size } }
