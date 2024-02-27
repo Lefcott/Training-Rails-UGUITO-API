@@ -3,6 +3,13 @@ module Api
     class NotesController < ApplicationController
       def index
         type = params[:type]
+        page_size = params[:page_size]
+        max_page_size = 100
+
+        if page_size.to_i > max_page_size
+          return render json: { error: "page_size is too long, max allowed is #{max_page_size}" }, status: :bad_request
+        end
+
         if type && !Note.types.keys.include?(type)
           return render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
         end
