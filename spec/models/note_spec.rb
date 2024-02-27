@@ -4,6 +4,7 @@ RSpec.describe Note, type: :model do
   subject(:note) { create(:note, utility: north_utility) }
 
   let(:north_utility) { create(:north_utility, code: 1) }
+  let(:south_utility) { create(:south_utility, code: 1) }
 
   %i[title content type].each do |value|
     it { is_expected.to validate_presence_of(value) }
@@ -23,38 +24,81 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#content_length' do
-    context 'when content has less than 50 words' do
-      it 'returns short' do
-        subject.content = 'word ' * 49
-        expect(subject.content_length).to eq 'short'
+    context 'with NorthUtility' do
+      subject(:note) { create(:note, utility: north_utility) }
+
+      context 'when content has less than 50 words' do
+        it 'returns short' do
+          subject.content = 'word ' * 49
+          expect(subject.content_length).to eq 'short'
+        end
+      end
+
+      context 'when content has 50 words' do
+        it 'returns short' do
+          subject.content = 'word ' * 50
+          expect(subject.content_length).to eq 'short'
+        end
+      end
+
+      context 'when content has less than 100 words' do
+        it 'returns medium' do
+          subject.content = 'word ' * 99
+          expect(subject.content_length).to eq 'medium'
+        end
+      end
+
+      context 'when content has 100 words' do
+        it 'returns medium' do
+          subject.content = 'word ' * 100
+          expect(subject.content_length).to eq 'medium'
+        end
+      end
+
+      context 'when content has more than 100 words' do
+        it 'returns long' do
+          subject.content = 'word ' * 101
+          expect(subject.content_length).to eq 'long'
+        end
       end
     end
 
-    context 'when content has 50 words' do
-      it 'returns short' do
-        subject.content = 'word ' * 50
-        expect(subject.content_length).to eq 'short'
-      end
-    end
+    context 'with SouthUtility' do
+      subject(:note) { create(:note, utility: south_utility) }
 
-    context 'when content has less than 100 words' do
-      it 'returns medium' do
-        subject.content = 'word ' * 99
-        expect(subject.content_length).to eq 'medium'
+      context 'when content has less than 60 words' do
+        it 'returns short' do
+          subject.content = 'word ' * 59
+          expect(subject.content_length).to eq 'short'
+        end
       end
-    end
 
-    context 'when content has 100 words' do
-      it 'returns medium' do
-        subject.content = 'word ' * 100
-        expect(subject.content_length).to eq 'medium'
+      context 'when content has 60 words' do
+        it 'returns short' do
+          subject.content = 'word ' * 60
+          expect(subject.content_length).to eq 'short'
+        end
       end
-    end
 
-    context 'when content has more than 100 words' do
-      it 'returns long' do
-        subject.content = 'word ' * 101
-        expect(subject.content_length).to eq 'long'
+      context 'when content has less than 100 words' do
+        it 'returns medium' do
+          subject.content = 'word ' * 119
+          expect(subject.content_length).to eq 'medium'
+        end
+      end
+
+      context 'when content has 120 words' do
+        it 'returns medium' do
+          subject.content = 'word ' * 120
+          expect(subject.content_length).to eq 'medium'
+        end
+      end
+
+      context 'when content has more than 120 words' do
+        it 'returns long' do
+          subject.content = 'word ' * 121
+          expect(subject.content_length).to eq 'long'
+        end
       end
     end
   end
