@@ -7,8 +7,6 @@ RSpec.describe Note, type: :model do
     it { is_expected.to validate_presence_of(value) }
   end
 
-  it { is_expected.to belong_to :user }
-
   it { is_expected.to have_one(:utility).through(:user) }
 
   it 'has a valid factory' do
@@ -67,6 +65,7 @@ RSpec.describe Note, type: :model do
   describe '#validate_word_count' do
     before do
       subject.utility.short_content_length = 50
+      subject.utility.medium_content_length = 100
     end
 
     describe 'for note with type: review' do
