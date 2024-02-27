@@ -42,7 +42,6 @@ describe Api::V1::NotesController, type: :controller do
 
     context 'when fetching notes using filters' do
       let(:type) { 'review' }
-
       let!(:notes_custom) { create_list(:note, 2, type: type, content: 'words', user: user) }
       let(:notes_expected) { notes_custom.sort_by(&:id).reverse }
 
