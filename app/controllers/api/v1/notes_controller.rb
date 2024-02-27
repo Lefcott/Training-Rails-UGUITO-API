@@ -26,7 +26,7 @@ module Api
         note = current_user.notes.new(create_note_params)
 
         if note.save
-          render json: note, status: :created
+          render json: { message: 'Nota creada con éxito.' }, status: :created
         else
           render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
         end
