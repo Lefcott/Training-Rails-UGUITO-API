@@ -1,6 +1,8 @@
 module Api
   module V1
     class NotesController < ApplicationController
+      before_action :authenticate_user!
+
       def index
         type = params[:type]
         page_size = params[:page_size]
@@ -23,9 +25,7 @@ module Api
       private
 
       def notes
-        # TODO: Use current_user to get notes associated to the user
-        # current_user.notes
-        Note.all
+        current_user.notes
       end
 
       def notes_filtered
