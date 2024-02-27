@@ -22,6 +22,16 @@ module Api
         render json: show_note, status: :ok, serializer: ShowNoteSerializer
       end
 
+      def create
+        note = current_user.notes.new(create_note_params)
+
+        if note.save
+          render json: note, status: :created
+        else
+          render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def notes
@@ -39,6 +49,10 @@ module Api
 
       def show_note
         notes.find(params.require(:id))
+      end
+
+      def create_note_params
+        params.permit(:title, :type, :content)
       end
     end
   end
