@@ -12,7 +12,7 @@ module Api
           return render json: { error: "page_size is too long, max allowed is #{max_page_size}" }, status: :bad_request
         end
 
-        if type && !Note.types.keys.include?(type)
+        if type && invalid_note_type
           return render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
         end
         render json: notes_filtered, status: :ok, each_serializer: IndexNoteSerializer
@@ -23,20 +23,27 @@ module Api
       end
 
       def create
-        note = current_user.notes.new(create_note_params)
+        required_params = { error: 'Faltan parámetros requeridos.' }
+        invalid_note_type_err = { error: 'El tipo de nota no es válido.' }
 
-        if invalid_create_note_params
-          return render json: { error: 'Faltan parametros requeridos.' }, status: :bad_request
+        return render json: required_params, status: :bad_request if invalid_create_params
+
+        if invalid_note_type
+          return render json: invalid_note_type_err, status: :unprocessable_entity
         end
 
-        if note.save
-          render json: { message: 'Nota creada con éxito.' }, status: :created
-        else
-          render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
-        end
+        current_user.notes.create(create_note_params) ? render_created : render_create_errors(note)
       end
 
       private
+
+      def render_created
+        render json: { message: 'Nota creada con éxito.' }, status: :created
+      end
+
+      def render_create_errors(note)
+        render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
+      end
 
       def notes
         current_user.notes
@@ -59,8 +66,12 @@ module Api
         params.permit(:title, :type, :content)
       end
 
-      def invalid_create_note_params
+      def invalid_create_params
         params[:title].blank? || params[:content].blank? || params[:type].blank?
+      end
+
+      def invalid_note_type
+        !Note.types.keys.include? params[:type]
       end
     end
   end
