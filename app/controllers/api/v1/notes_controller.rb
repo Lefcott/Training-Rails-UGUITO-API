@@ -25,6 +25,10 @@ module Api
       def create
         note = current_user.notes.new(create_note_params)
 
+        if invalid_create_note_params
+          return render json: { error: 'Faltan parametros requeridos.' }, status: :bad_request
+        end
+
         if note.save
           render json: { message: 'Nota creada con éxito.' }, status: :created
         else
@@ -53,6 +57,10 @@ module Api
 
       def create_note_params
         params.permit(:title, :type, :content)
+      end
+
+      def invalid_create_note_params
+        params[:title].blank? || params[:content].blank? || params[:type].blank?
       end
     end
   end
