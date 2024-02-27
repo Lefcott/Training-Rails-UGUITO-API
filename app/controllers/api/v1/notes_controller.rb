@@ -32,7 +32,7 @@ module Api
           return render json: invalid_note_type_err, status: :unprocessable_entity
         end
 
-        current_user.notes.create(create_note_params) ? render_created : render_create_errors(note)
+        create_note
       end
 
       private
@@ -72,6 +72,15 @@ module Api
 
       def invalid_note_type
         !Note.types.keys.include? params[:type]
+      end
+
+      def create_note
+        current_user.notes.create! create_note_params
+        render_created
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue StandardError
+        render_create_errors(note)
       end
     end
   end
