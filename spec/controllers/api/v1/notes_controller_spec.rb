@@ -76,6 +76,14 @@ describe Api::V1::NotesController, type: :controller do
         end
       end
     end
+
+    context 'when there is no user logged in' do
+      context 'when fetching all the notes for user' do
+        before { get :index }
+
+        it_behaves_like 'unauthorized'
+      end
+    end
   end
 
   describe 'GET #show' do
@@ -106,6 +114,14 @@ describe Api::V1::NotesController, type: :controller do
         it 'responds with 404 status' do
           expect(response).to have_http_status(:not_found)
         end
+      end
+    end
+
+    context 'when there is no user logged in' do
+      context 'when fetching a specific note for user' do
+        before { get :show, params: { id: Faker::Number.number } }
+
+        it_behaves_like 'unauthorized'
       end
     end
   end
