@@ -1,7 +1,9 @@
 class NorthUtility < Utility
-  def initialize(param)
-    @short_content_length = 50
-    @medium_content_length = 100
-    super param
+  def short_content_length
+    50
+  end
+
+  def medium_content_length
+    100
   end
 end
