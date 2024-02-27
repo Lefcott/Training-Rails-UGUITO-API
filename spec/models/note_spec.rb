@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Note, type: :model do
-  subject(:note) { create(:note) }
+  subject(:note) { create(:note, utility: north_utility) }
+
+  let(:north_utility) { create(:north_utility, code: 1) }
 
   %i[title content type].each do |value|
     it { is_expected.to validate_presence_of(value) }
@@ -21,11 +23,6 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#content_length' do
-    before do
-      subject.utility.short_content_length = 50
-      subject.utility.medium_content_length = 100
-    end
-
     context 'when content has less than 50 words' do
       it 'returns short' do
         subject.content = 'word ' * 49
@@ -63,10 +60,7 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#validate_word_count' do
-    before do
-      subject.utility.short_content_length = 50
-      subject.utility.medium_content_length = 100
-    end
+    subject(:note) { create(:note, utility: north_utility) }
 
     describe 'for note with type: review' do
       before do
