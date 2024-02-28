@@ -10,7 +10,7 @@ describe Api::V1::NotesController, type: :controller do
                                                         serializer: BriefNoteSerializer).to_json
     end
 
-    context 'when fetching all the notes for user' do
+    context 'when fetching all the notes' do
       let(:notes_expected) { user_notes.sort_by(&:id).reverse }
 
       before { get :index }
