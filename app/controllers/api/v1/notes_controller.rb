@@ -4,16 +4,16 @@ module Api
       before_action :authenticate_user!
 
       def index
-        type = params[:type]
-        page_size = params[:page_size]
         max_page_size = 100
 
-        if page_size.to_i > max_page_size
-          return render json: { error: "page_size is too long, max allowed is #{max_page_size}" }, status: :bad_request
+        if params[:page_size].to_i > max_page_size
+          error_message = I18n.t('responses.note.long_page_size', max_page_size: max_page_size)
+          return render json: { error: error_message }, status: :bad_request
         end
 
-        if type && invalid_note_type
-          return render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
+        if params[:type] && invalid_note_type
+          error_message = I18n.t('responses.note.invalid_type')
+          return render json: { error: error_message }, status: :unprocessable_entity
         end
         render json: notes_filtered, status: :ok, each_serializer: IndexNoteSerializer
       end
@@ -23,8 +23,8 @@ module Api
       end
 
       def create
-        required_params = { error: 'Faltan parámetros requeridos.' }
-        invalid_note_type_err = { error: 'El tipo de nota no es válido.' }
+        required_params = { error: I18n.t('responses.global.missing_required_params') }
+        invalid_note_type_err = { error: I18n.t('responses.note.invalid_type') }
 
         return render json: required_params, status: :bad_request if invalid_create_params
 
@@ -38,7 +38,7 @@ module Api
       private
 
       def render_created
-        render json: { message: 'Nota creada con éxito.' }, status: :created
+        render json: { message: I18n.t('responses.note.created') }, status: :created
       end
 
       def render_create_errors(note)

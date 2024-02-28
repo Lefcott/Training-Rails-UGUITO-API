@@ -1,4 +1,11 @@
 es:
+  responses:
+    global:
+      missing_required_params: 'Faltan parámetros requeridos.'
+    note:
+      created: 'Nota creada con éxito.'
+      invalid_type: 'El tipo de nota no es válido.'
+      long_page_size: 'El tamaño de página es demasiado largo, el máximo permitido es %{max_page_size}'
   note:
     word_count_validation: "Una reseña no puede superar las %{max_words} palabras"
   activerecord:

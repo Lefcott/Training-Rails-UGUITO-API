@@ -1,4 +1,11 @@
 en:
+  responses:
+    global:
+      missing_required_params: 'Missing required parameters.'
+    note:
+      created: 'Note created successfully.'
+      invalid_type: 'Invalid note type.'
+      long_page_size: 'Page size is too long, max allowed is %{max_page_size}'
   note:
     word_count_validation: "A review cannot exceed %{max_words} words"
   activerecord:
