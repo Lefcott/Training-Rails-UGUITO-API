@@ -1,6 +1,6 @@
 en:
   note:
-    word_count_validation: "is invalid. It can't be more than %{max_words} words for type :review"
+    word_count_validation: "A review cannot exceed %{max_words} words"
   activerecord:
     errors:
       messages:

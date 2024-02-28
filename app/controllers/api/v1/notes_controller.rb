@@ -77,7 +77,7 @@ module Api
       def create_note
         current_user.notes.create! create_note_params
         render_created
-      rescue ActiveRecord::RecordInvalid => e
+      rescue Exceptions::InvalidContentLengthError => e
         render json: { error: e.message }, status: :unprocessable_entity
       rescue StandardError
         render_create_errors(note)
