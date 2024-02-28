@@ -30,45 +30,9 @@ RSpec.describe Note, type: :model do
     describe '#content_length' do
       subject(:note) { create(:note, type: :critique, utility: north_utility, content: content) }
 
-      context 'when content has less than 50 words' do
-        let(:content) { 'word ' * (short_content_length - 1) }
+      include_examples 'note_content_length', 50, %w[short medium]
 
-        it 'returns short' do
-          expect(subject.content_length).to eq 'short'
-        end
-      end
-
-      context 'when content has 50 words' do
-        let(:content) { 'word ' * short_content_length }
-
-        it 'returns short' do
-          expect(subject.content_length).to eq 'short'
-        end
-      end
-
-      context 'when content has less than 100 words' do
-        let(:content) { 'word ' * (medium_content_length - 1) }
-
-        it 'returns medium' do
-          expect(subject.content_length).to eq 'medium'
-        end
-      end
-
-      context 'when content has 100 words' do
-        let(:content) { 'word ' * medium_content_length }
-
-        it 'returns medium' do
-          expect(subject.content_length).to eq 'medium'
-        end
-      end
-
-      context 'when content has more than 100 words' do
-        let(:content) { 'word ' * (medium_content_length + 1) }
-
-        it 'returns long' do
-          expect(subject.content_length).to eq 'long'
-        end
-      end
+      include_examples 'note_content_length', 100, %w[medium long]
     end
 
     describe '#validate_word_count' do
@@ -137,45 +101,9 @@ RSpec.describe Note, type: :model do
     describe '#content_length' do
       subject(:note) { create(:note, type: :critique, utility: south_utility, content: content) }
 
-      context 'when content has less than 60 words' do
-        let(:content) { 'word ' * (short_content_length - 1) }
+      include_examples 'note_content_length', 60, %w[short medium]
 
-        it 'returns short' do
-          expect(subject.content_length).to eq 'short'
-        end
-      end
-
-      context 'when content has 60 words' do
-        let(:content) { 'word ' * short_content_length }
-
-        it 'returns short' do
-          expect(subject.content_length).to eq 'short'
-        end
-      end
-
-      context 'when content has less than 120 words' do
-        let(:content) { 'word ' * (medium_content_length - 1) }
-
-        it 'returns medium' do
-          expect(subject.content_length).to eq 'medium'
-        end
-      end
-
-      context 'when content has 120 words' do
-        let(:content) { 'word ' * medium_content_length }
-
-        it 'returns medium' do
-          expect(subject.content_length).to eq 'medium'
-        end
-      end
-
-      context 'when content has more than 120 words' do
-        let(:content) { 'word ' * (medium_content_length + 1) }
-
-        it 'returns long' do
-          expect(subject.content_length).to eq 'long'
-        end
-      end
+      include_examples 'note_content_length', 120, %w[medium long]
     end
 
     describe '#validate_word_count' do
