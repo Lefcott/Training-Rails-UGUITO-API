@@ -2,10 +2,6 @@ module Api
   module V1
     class NotesController < ApplicationController
       def index
-        type = params[:type]
-        page_size = params[:page_size]
-        max_page_size = 100
-
         if page_size.to_i > max_page_size
           return render json: { error: "page_size is too long, max allowed is #{max_page_size}" }, status: :bad_request
         end
@@ -39,6 +35,18 @@ module Api
 
       def show_note
         notes.find(params.require(:id))
+      end
+
+      def type
+        params[:type]
+      end
+
+      def page_size
+        params[:page_size].presence || max_page_size
+      end
+
+      def max_page_size
+        100
       end
     end
   end
