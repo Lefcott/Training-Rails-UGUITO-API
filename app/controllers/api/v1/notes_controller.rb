@@ -14,7 +14,7 @@ module Api
       private
 
       def notes
-        Note.all.where(filter_params).order(created_at: order).page(page).per(page_size)
+        Note.filtered filter_params, order, page, page_size
       end
 
       def filter_params

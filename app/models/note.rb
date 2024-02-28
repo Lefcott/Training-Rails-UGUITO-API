@@ -22,6 +22,10 @@ class Note < ApplicationRecord
 
   self.inheritance_column = :_type_disabled
 
+  scope :filtered, lambda { |filter_params, order, page, page_size|
+    where(filter_params).order(created_at: order).page(page).per(page_size)
+  }
+
   def word_count
     content.scan(/[\p{Alpha}\-']+/).length
   end
