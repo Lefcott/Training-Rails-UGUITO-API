@@ -14,8 +14,7 @@ module Api
       private
 
       def notes
-        order, page, page_size = params.values_at(:order, :page, :page_size)
-        Note.all.where(filter_params).order(created_at: order || :desc).page(page).per(page_size)
+        Note.all.where(filter_params).order(created_at: order).page(page).per(page_size)
       end
 
       def filter_params
@@ -28,6 +27,14 @@ module Api
 
       def type
         params[:type]
+      end
+
+      def order
+        params[:order].presence || :desc
+      end
+
+      def page
+        params[:page].presence || 1
       end
 
       def page_size
