@@ -15,10 +15,10 @@ module Api
 
       def notes
         order, page, page_size = params.values_at(:order, :page, :page_size)
-        Note.all.where(index_params).order(created_at: order || :desc).page(page).per(page_size)
+        Note.all.where(filter_params).order(created_at: order || :desc).page(page).per(page_size)
       end
 
-      def index_params
+      def filter_params
         params.permit %i[type]
       end
 
