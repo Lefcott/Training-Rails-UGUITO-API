@@ -8,7 +8,7 @@ module Api
       end
 
       def show
-        render json: show_note, status: :ok, serializer: ShowNoteSerializer
+        render json: note, status: :ok, serializer: ShowNoteSerializer
       end
 
       private
@@ -22,7 +22,7 @@ module Api
         params.permit %i[type]
       end
 
-      def show_note
+      def note
         Note.find(params.require(:id))
       end
 
