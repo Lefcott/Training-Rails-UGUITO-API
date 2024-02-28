@@ -95,7 +95,7 @@ RSpec.describe Note, type: :model do
           let(:content) { 'word ' * (short_content_length + 1) }
 
           it 'fails' do
-            expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /#{Regexp.escape(I18n.t('note.word_count_validation', max_words: short_content_length))}/)
+            expect { subject.save! }.to raise_error(Exceptions::InvalidContentLengthError, /#{Regexp.escape(I18n.t('note.word_count_validation', max_words: short_content_length))}/)
           end
         end
       end
@@ -202,7 +202,7 @@ RSpec.describe Note, type: :model do
           let(:content) { 'word ' * (short_content_length + 1) }
 
           it 'fails' do
-            expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /#{Regexp.escape(I18n.t('note.word_count_validation', max_words: short_content_length))}/)
+            expect { subject.save! }.to raise_error(Exceptions::InvalidContentLengthError, /#{Regexp.escape(I18n.t('note.word_count_validation', max_words: short_content_length))}/)
           end
         end
       end
