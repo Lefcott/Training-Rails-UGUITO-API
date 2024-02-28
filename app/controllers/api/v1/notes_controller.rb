@@ -2,13 +2,8 @@ module Api
   module V1
     class NotesController < ApplicationController
       def index
-        if page_size.to_i > max_page_size
-          return render json: { error: "page_size is too long, max allowed is #{max_page_size}" }, status: :bad_request
-        end
-
-        if type && !Note.types.keys.include?(type)
-          return render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
-        end
+        return render_long_page_size if page_size.to_i > max_page_size
+        return render_invalid_type if type.present? && !Note.types.keys.include?(type)
         render json: notes_filtered, status: :ok, each_serializer: IndexNoteSerializer
       end
 
@@ -19,8 +14,6 @@ module Api
       private
 
       def notes
-        # TODO: Use current_user to get notes associated to the user
-        # current_user.notes
         Note.all
       end
 
@@ -47,6 +40,18 @@ module Api
 
       def max_page_size
         100
+      end
+
+      def render_long_page_size
+        render json: { error: large_page_size_error_message }, status: :bad_request
+      end
+
+      def large_page_size_error_message
+        "page_size is too long, max allowed is #{max_page_size}"
+      end
+
+      def render_invalid_type
+        render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
       end
     end
   end
