@@ -4,11 +4,11 @@ module Api
       def index
         return render_long_page_size if page_size.to_i > max_page_size
         return render_invalid_type if type.present? && !Note.types.keys.include?(type)
-        render json: notes, status: :ok, each_serializer: IndexNoteSerializer
+        render json: notes, status: :ok, each_serializer: BriefNoteSerializer
       end
 
       def show
-        render json: note, status: :ok, serializer: ShowNoteSerializer
+        render json: note, status: :ok, serializer: NoteSerializer
       end
 
       private

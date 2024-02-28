@@ -7,7 +7,7 @@ describe Api::V1::NotesController, type: :controller do
 
     let!(:expected) do
       ActiveModel::Serializer::CollectionSerializer.new(notes_expected,
-                                                        serializer: IndexNoteSerializer).to_json
+                                                        serializer: BriefNoteSerializer).to_json
     end
 
     context 'when fetching all the notes for user' do
@@ -75,7 +75,7 @@ describe Api::V1::NotesController, type: :controller do
   end
 
   describe 'GET #show' do
-    let(:expected) { ShowNoteSerializer.new(note, root: false).to_json }
+    let(:expected) { NoteSerializer.new(note, root: false).to_json }
     let(:user) { create(:user) }
 
     context 'when fetching a valid note' do
