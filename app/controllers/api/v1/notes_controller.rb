@@ -4,7 +4,7 @@ module Api
       def index
         return render_long_page_size if page_size.to_i > max_page_size
         return render_invalid_type if type.present? && !Note.types.keys.include?(type)
-        render json: notes_filtered, status: :ok, each_serializer: IndexNoteSerializer
+        render json: notes, status: :ok, each_serializer: IndexNoteSerializer
       end
 
       def show
@@ -14,20 +14,16 @@ module Api
       private
 
       def notes
-        Note.all
-      end
-
-      def notes_filtered
         order, page, page_size = params.values_at(:order, :page, :page_size)
-        notes.where(filtering_params).order(created_at: order || :desc).page(page).per(page_size)
+        Note.all.where(index_params).order(created_at: order || :desc).page(page).per(page_size)
       end
 
-      def filtering_params
+      def index_params
         params.permit %i[type]
       end
 
       def show_note
-        notes.find(params.require(:id))
+        Note.find(params.require(:id))
       end
 
       def type
