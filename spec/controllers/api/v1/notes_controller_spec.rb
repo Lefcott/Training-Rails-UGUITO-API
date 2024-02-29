@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::NotesController, type: :controller do
   let(:user) { create(:user) }
+  let(:utility) { user.utility }
 
   describe 'GET #index' do
     let(:expected_keys) { %w[id title type content_length] }
@@ -193,7 +194,7 @@ describe Api::V1::NotesController, type: :controller do
           expect(response).to have_http_status :bad_request
         end
 
-        it 'responds with the expected message' do
+        it 'responds with the expected error' do
           expect(response_body['error']).to eq I18n.t('responses.global.missing_required_params')
         end
       end
@@ -207,8 +208,23 @@ describe Api::V1::NotesController, type: :controller do
           expect(response).to have_http_status :unprocessable_entity
         end
 
-        it 'responds with the expected message' do
+        it 'responds with the expected error' do
           expect(response_body['error']).to eq I18n.t('responses.note.invalid_type')
+        end
+      end
+
+      context 'when creating a note with a large content' do
+        let(:params) { { title: title, type: type, content: content, user_id: user.id } }
+        let(:content) { 'word ' * 100 }
+
+        before { post :create, params: params }
+
+        it 'responds with 422 status' do
+          expect(response).to have_http_status :unprocessable_entity
+        end
+
+        it 'responds with the expected error' do
+          expect(response_body['error']).to include I18n.t('note.word_count_validation', max_words: utility.short_content_length)
         end
       end
     end
