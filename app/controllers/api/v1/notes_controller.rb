@@ -14,15 +14,8 @@ module Api
       end
 
       def create
-        required_params = { error: I18n.t('responses.global.missing_required_params') }
-        invalid_note_type_err = { error: I18n.t('responses.note.invalid_type') }
-
-        return render json: required_params, status: :bad_request if invalid_create_params
-
-        if invalid_note_type
-          return render json: invalid_note_type_err, status: :unprocessable_entity
-        end
-
+        return render_missing_params if missing_params
+        return render_invalid_type if invalid_note_type
         create_note
       end
 
@@ -84,6 +77,14 @@ module Api
         I18n.t('responses.note.invalid_type')
       end
 
+      def render_missing_params
+        render json: { error: missing_params_error_message }, status: :bad_request
+      end
+
+      def missing_params_error_message
+        I18n.t('responses.global.missing_required_params')
+      end
+
       def create_note
         current_user.notes.create! create_note_params
         render_created
@@ -97,7 +98,7 @@ module Api
         params.permit(:title, :type, :content)
       end
 
-      def invalid_create_params
+      def missing_params
         params[:title].blank? || params[:content].blank? || params[:type].blank?
       end
 
