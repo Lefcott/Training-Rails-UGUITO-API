@@ -56,6 +56,15 @@ module Api
       def render_invalid_type
         render json: { error: "invalid type #{type}" }, status: :unprocessable_entity
       end
+
+      def create_note
+        current_user.notes.create! create_note_params
+        render_created
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue StandardError
+        render_create_errors(note)
+      end
     end
   end
 end
