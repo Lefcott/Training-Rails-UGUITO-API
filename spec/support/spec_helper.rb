@@ -29,6 +29,18 @@ RSpec.configure do |config|
 
   Faker::Config.random = Random.new(config.seed)
 
+  RSpec::Matchers.define :have_keys do |*expected_keys|
+    match { |hash| expected_keys.all? { |key| hash.key?(key) } }
+
+    failure_message do |actual|
+      "expected #{actual} to have keys #{expected_keys}"
+    end
+
+    failure_message_when_negated do |actual|
+      "expected #{actual} to not have keys #{expected_keys}"
+    end
+  end
+
   config.before(:all) do
     FactoryBot.reload
   end
