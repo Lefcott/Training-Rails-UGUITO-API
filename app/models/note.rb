@@ -14,9 +14,27 @@ class Note < ApplicationRecord
   belongs_to :user
   has_one :utility, through: :user
 
-  validates :user_id, :title, :content, :type, presence: true
+  validates :title, :content, presence: true
+  validates :type, presence: true, inclusion: { in: %w[review critique] }
+  validate :validate_word_count
 
   enum type: { review: 0, critique: 1 }
 
   self.inheritance_column = :_type_disabled
+
+  def word_count
+    content.scan(/[\p{Alpha}\-']+/).length
+  end
+
+  def content_length
+    return 'short' if word_count <= utility.short_content_length
+    return 'medium' if word_count <= utility.medium_content_length
+    'long'
+  end
+
+  def validate_word_count
+    invalid = content && content_length != 'short' && type == 'review'
+    max_words = utility.short_content_length
+    errors.add :note, I18n.t('note.word_count_validation', max_words: max_words) if invalid
+  end
 end

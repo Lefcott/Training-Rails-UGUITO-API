@@ -27,8 +27,9 @@ class Utility < ApplicationRecord
   validates :name, uniqueness: true
   validates :name, :type, presence: true
 
+  attr_accessor :short_content_length, :medium_content_length
+
   store_accessor :integration_urls, :external_api_authentication_url, :books_data_url
-  self.inheritance_column = :_type_disabled
 
   def generate_entity_code
     return if code.present? && !code.to_i.zero?
