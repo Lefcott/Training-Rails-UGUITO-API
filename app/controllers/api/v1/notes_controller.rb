@@ -5,7 +5,7 @@ module Api
 
       def index
         return render_long_page_size if page_size.to_i > max_page_size
-        return render_invalid_type if type.present? && !Note.types.keys.include?(type)
+        return render_invalid_type if type.present? && invalid_note_type
         render json: notes, status: :ok, each_serializer: BriefNoteSerializer
       end
 
@@ -103,7 +103,7 @@ module Api
       end
 
       def invalid_note_type
-        !Note.types.keys.include? params[:type]
+        !Note.types.keys.include? type
       end
     end
   end
