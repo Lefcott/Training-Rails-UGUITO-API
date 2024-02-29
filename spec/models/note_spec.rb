@@ -30,7 +30,7 @@ shared_examples 'note_save' do
   context 'when the note is a review' do
     let(:type) { :review }
 
-    context 'when count is less than 50' do
+    context 'when count is less than short_content_length' do
       let(:content) { 'word ' * (utility.short_content_length - 1) }
 
       it 'succeeds' do
@@ -38,7 +38,7 @@ shared_examples 'note_save' do
       end
     end
 
-    context 'when word count is 50' do
+    context 'when word count is short_content_length' do
       let(:content) { 'word ' * utility.short_content_length }
 
       it 'succeeds' do
@@ -46,7 +46,7 @@ shared_examples 'note_save' do
       end
     end
 
-    context 'when word count is greater than 50' do
+    context 'when word count is greater than short_content_length' do
       let(:content) { 'word ' * (utility.short_content_length + 1) }
 
       it 'fails' do
@@ -58,7 +58,7 @@ shared_examples 'note_save' do
   context 'when the note is a critique' do
     let(:type) { :critique }
 
-    context 'when word count is less than 50' do
+    context 'when word count is less than short_content_length' do
       let(:content) { 'word ' * (utility.short_content_length - 1) }
 
       it 'succeeds' do
@@ -66,7 +66,7 @@ shared_examples 'note_save' do
       end
     end
 
-    context 'when word count is 50' do
+    context 'when word count is short_content_length' do
       let(:content) { 'word ' * utility.short_content_length }
 
       it 'succeeds' do
@@ -74,7 +74,7 @@ shared_examples 'note_save' do
       end
     end
 
-    context 'when word count is greater than 50' do
+    context 'when word count is greater than short_content_length' do
       let(:content) { 'word ' * (utility.short_content_length + 1) }
 
       it 'succeeds' do
