@@ -169,11 +169,11 @@ describe Api::V1::NotesController, type: :controller do
     let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
 
     context 'when there is a user logged in' do
+      let(:params) { { title: title, type: type, content: content } }
+
       include_context 'with authenticated user'
 
       context 'when creating a valid note' do
-        let(:params) { { title: title, type: type, content: content, user_id: user.id } }
-
         before { post :create, params: params }
 
         it 'responds with 201 status' do
@@ -186,7 +186,7 @@ describe Api::V1::NotesController, type: :controller do
       end
 
       context 'when a required parameter is missing' do
-        let(:params) { { type: type, content: content, user_id: user.id } }
+        let(:title) { nil }
 
         before { post :create, params: params }
 
@@ -200,7 +200,7 @@ describe Api::V1::NotesController, type: :controller do
       end
 
       context 'when sending an invalid type' do
-        let(:params) { { title: title, type: :invalid_type, content: content, user_id: user.id } }
+        let(:type) { :invalid_type }
 
         before { post :create, params: params }
 
@@ -214,7 +214,6 @@ describe Api::V1::NotesController, type: :controller do
       end
 
       context 'when creating a note with a large content' do
-        let(:params) { { title: title, type: type, content: content, user_id: user.id } }
         let(:content) { 'word ' * 100 }
 
         before { post :create, params: params }
