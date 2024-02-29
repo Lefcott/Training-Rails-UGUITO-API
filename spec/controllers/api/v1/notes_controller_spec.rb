@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 describe Api::V1::NotesController, type: :controller do
+  let(:user) { create(:user) }
+
   describe 'GET #index' do
-    let(:user) { create(:user) }
     let(:expected_keys) { %w[id title type content_length] }
 
     before do
@@ -125,7 +126,6 @@ describe Api::V1::NotesController, type: :controller do
 
   describe 'GET #show' do
     let(:expected_keys) { %w[id title type word_count created_at content content_length user] }
-    let(:user) { create(:user) }
 
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
@@ -156,6 +156,40 @@ describe Api::V1::NotesController, type: :controller do
     context 'when there is no user logged in' do
       context 'when fetching a specific note for user' do
         before { get :show, params: { id: Faker::Number.number } }
+
+        it_behaves_like 'unauthorized'
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    let(:title) { Faker::Book.title }
+    let(:type) { :review }
+    let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
+
+    context 'when there is a user logged in' do
+      let(:params) { { title: title, type: type, content: content, user_id: user.id } }
+
+      include_context 'with authenticated user'
+
+      context 'when creating a valid note' do
+        let(:note) { create(:note, user: user) }
+
+        before { post :create, params: params }
+
+        it 'responds with 201 status' do
+          expect(response).to have_http_status :created
+        end
+
+        it 'responds with the expected message' do
+          expect(response_body['message']).to eq I18n.t('responses.note.created')
+        end
+      end
+    end
+
+    context 'when there is no user logged in' do
+      context 'when creating a note' do
+        before { post :create }
 
         it_behaves_like 'unauthorized'
       end
