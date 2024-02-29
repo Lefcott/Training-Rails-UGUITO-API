@@ -62,7 +62,7 @@ RSpec.describe Note, type: :model do
     end
 
     describe '#validate_word_count' do
-      describe 'for note with type: review' do
+      context 'when the note is a review' do
         subject(:note) { build(:note, type: :review, utility: north_utility, content: content) }
 
         context 'when count is less than 50' do
@@ -90,7 +90,7 @@ RSpec.describe Note, type: :model do
         end
       end
 
-      describe 'for note with type: critique' do
+      context 'when the note is a critique' do
         subject(:note) { build(:note, type: :critique, utility: north_utility, content: content) }
 
         context 'when word count is less than 50' do
@@ -133,7 +133,7 @@ RSpec.describe Note, type: :model do
     end
 
     describe '#validate_word_count' do
-      describe 'for note with type: review' do
+      context 'when the note is a review' do
         subject(:note) { build(:note, type: :review, utility: south_utility, content: content) }
 
         context 'when count is less than 60' do
@@ -161,7 +161,7 @@ RSpec.describe Note, type: :model do
         end
       end
 
-      describe 'for note with type: critique' do
+      context 'when the note is a critique' do
         subject(:note) { build(:note, type: :critique, utility: north_utility, content: content) }
 
         context 'when word count is less than 60' do
