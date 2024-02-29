@@ -26,9 +26,70 @@ shared_examples 'note_content_length' do |word_count_limit, expected_content_len
   end
 end
 
-RSpec.describe Note, type: :model do
-  subject(:note) { create(:note, utility: north_utility) }
+shared_examples 'note_save' do
+  context 'when the note is a review' do
+    let(:type) { :review }
 
+    context 'when count is less than short_content_length' do
+      let(:content) { 'word ' * (utility.short_content_length - 1) }
+
+      it 'succeeds' do
+        expect { subject.save! }.not_to raise_error
+      end
+    end
+
+    context 'when word count is short_content_length' do
+      let(:content) { 'word ' * utility.short_content_length }
+
+      it 'succeeds' do
+        expect { subject.save! }.not_to raise_error
+      end
+    end
+
+    context 'when word count is greater than short_content_length' do
+      let(:content) { 'word ' * (utility.short_content_length + 1) }
+
+      it 'fails' do
+        expect { subject.save! }.to raise_error ActiveRecord::RecordInvalid
+      end
+    end
+  end
+
+  context 'when the note is a critique' do
+    let(:type) { :critique }
+
+    context 'when word count is less than short_content_length' do
+      let(:content) { 'word ' * (utility.short_content_length - 1) }
+
+      it 'succeeds' do
+        expect { subject.save! }.not_to raise_error
+      end
+    end
+
+    context 'when word count is short_content_length' do
+      let(:content) { 'word ' * utility.short_content_length }
+
+      it 'succeeds' do
+        expect { subject.save! }.not_to raise_error
+      end
+    end
+
+    context 'when word count is greater than short_content_length' do
+      let(:content) { 'word ' * (utility.short_content_length + 1) }
+
+      it 'succeeds' do
+        expect { subject.save! }.not_to raise_error
+      end
+    end
+  end
+end
+
+RSpec.describe Note, type: :model do
+  subject(:note) { create(:note, utility: utility, content: content, type: type) }
+
+  let(:utility) { north_utility }
+  let(:type) { described_class.types.values.sample }
+  let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
   let(:north_utility) { create(:north_utility, code: 1) }
   let(:south_utility) { create(:south_utility, code: 1) }
 
@@ -43,151 +104,44 @@ RSpec.describe Note, type: :model do
   end
 
   describe '#word_count' do
+    let(:content) { 'it has four words' }
+
     it 'returns the correct number of words' do
-      subject.content = 'it has four words'
       expect(subject.word_count).to equal 4
     end
   end
 
-  describe 'NorthUtility' do
-    let(:short_content_length) { 50 }
-    let(:medium_content_length) { 100 }
+  describe '#content_length' do
+    let(:type) { :critique }
 
-    describe '#content_length' do
-      subject(:note) { create(:note, type: :critique, utility: north_utility, content: content) }
+    context 'with NorthUtility' do
+      let(:utility) { north_utility }
 
       include_examples 'note_content_length', 50, %w[short medium]
 
       include_examples 'note_content_length', 100, %w[medium long]
     end
 
-    describe '#validate_word_count' do
-      describe 'for note with type: review' do
-        subject(:note) { build(:note, type: :review, utility: north_utility, content: content) }
-
-        context 'when count is less than 50' do
-          let(:content) { 'word ' * (short_content_length - 1) }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is 50' do
-          let(:content) { 'word ' * short_content_length }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is greater than 50' do
-          let(:content) { 'word ' * (short_content_length + 1) }
-
-          it 'fails' do
-            expect { subject.save! }.to raise_error ActiveRecord::RecordInvalid
-          end
-        end
-      end
-
-      describe 'for note with type: critique' do
-        subject(:note) { build(:note, type: :critique, utility: north_utility, content: content) }
-
-        context 'when word count is less than 50' do
-          let(:content) { 'word ' * (short_content_length - 1) }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is 50' do
-          let(:content) { 'word ' * short_content_length }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is greater than 50' do
-          let(:content) { 'word ' * (short_content_length + 1) }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-      end
-    end
-  end
-
-  describe 'SouthUtility' do
-    let(:short_content_length) { 60 }
-    let(:medium_content_length) { 120 }
-
-    describe '#content_length' do
-      subject(:note) { create(:note, type: :critique, utility: south_utility, content: content) }
+    context 'with SouthUtility' do
+      let(:utility) { south_utility }
 
       include_examples 'note_content_length', 60, %w[short medium]
 
       include_examples 'note_content_length', 120, %w[medium long]
     end
+  end
 
-    describe '#validate_word_count' do
-      describe 'for note with type: review' do
-        subject(:note) { build(:note, type: :review, utility: south_utility, content: content) }
+  describe '#save!' do
+    context 'with NorthUtility' do
+      let(:utility) { north_utility }
 
-        context 'when count is less than 60' do
-          let(:content) { 'word ' * (short_content_length - 1) }
+      include_examples 'note_save'
+    end
 
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
+    context 'with SouthUtility' do
+      let(:utility) { south_utility }
 
-        context 'when word count is 60' do
-          let(:content) { 'word ' * short_content_length }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is greater than 60' do
-          let(:content) { 'word ' * (short_content_length + 1) }
-
-          it 'fails' do
-            expect { subject.save! }.to raise_error ActiveRecord::RecordInvalid
-          end
-        end
-      end
-
-      describe 'for note with type: critique' do
-        subject(:note) { build(:note, type: :critique, utility: north_utility, content: content) }
-
-        context 'when word count is less than 60' do
-          let(:content) { 'word ' * (short_content_length - 1) }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is 60' do
-          let(:content) { 'word ' * short_content_length }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-
-        context 'when word count is greater than 60' do
-          let(:content) { 'word ' * (short_content_length + 1) }
-
-          it 'succeeds' do
-            expect { subject.save! }.not_to raise_error
-          end
-        end
-      end
+      include_examples 'note_save'
     end
   end
 end
