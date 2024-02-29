@@ -4,22 +4,13 @@ module Api
       before_action :authenticate_user!
 
       def index
-        max_page_size = 100
-
-        if params[:page_size].to_i > max_page_size
-          error_message = I18n.t('responses.note.long_page_size', max_page_size: max_page_size)
-          return render json: { error: error_message }, status: :bad_request
-        end
-
-        if params[:type] && invalid_note_type
-          error_message = I18n.t('responses.note.invalid_type')
-          return render json: { error: error_message }, status: :unprocessable_entity
-        end
-        render json: notes_filtered, status: :ok, each_serializer: IndexNoteSerializer
+        return render_long_page_size if page_size.to_i > max_page_size
+        return render_invalid_type if type.present? && !Note.types.keys.include?(type)
+        render json: notes, status: :ok, each_serializer: BriefNoteSerializer
       end
 
       def show
-        render json: show_note, status: :ok, serializer: ShowNoteSerializer
+        render json: note, status: :ok, serializer: NoteSerializer
       end
 
       def create
@@ -46,20 +37,60 @@ module Api
       end
 
       def notes
-        current_user.notes
+        Note.filtered filter_params, order, page, page_size
       end
 
-      def notes_filtered
-        order, page, page_size = params.values_at(:order, :page, :page_size)
-        notes.where(filtering_params).order(created_at: order || :desc).page(page).per(page_size)
+      def filter_params
+        params.permit(%i[type]).merge user_id: current_user.id
       end
 
-      def filtering_params
-        params.permit %i[type]
+      def note
+        Note.find params.require(:id)
       end
 
-      def show_note
-        notes.find(params.require(:id))
+      def type
+        params[:type]
+      end
+
+      def order
+        params[:order].presence || :desc
+      end
+
+      def page
+        params[:page].presence || 1
+      end
+
+      def page_size
+        params[:page_size].presence || max_page_size
+      end
+
+      def max_page_size
+        100
+      end
+
+      def render_long_page_size
+        render json: { error: large_page_size_error_message }, status: :bad_request
+      end
+
+      def large_page_size_error_message
+        I18n.t('responses.note.long_page_size', max_page_size: max_page_size)
+      end
+
+      def render_invalid_type
+        render json: { error: invalid_type_error_message }, status: :unprocessable_entity
+      end
+
+      def invalid_type_error_message
+        I18n.t('responses.note.invalid_type')
+      end
+
+      def create_note
+        current_user.notes.create! create_note_params
+        render_created
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      rescue StandardError
+        render_create_errors(note)
       end
 
       def create_note_params
@@ -72,15 +103,6 @@ module Api
 
       def invalid_note_type
         !Note.types.keys.include? params[:type]
-      end
-
-      def create_note
-        current_user.notes.create! create_note_params
-        render_created
-      rescue Exceptions::InvalidContentLengthError => e
-        render json: { error: e.message }, status: :unprocessable_entity
-      rescue StandardError
-        render_create_errors(note)
       end
     end
   end

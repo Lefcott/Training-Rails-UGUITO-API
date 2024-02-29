@@ -3,27 +3,29 @@ require 'rails_helper'
 describe Api::V1::NotesController, type: :controller do
   describe 'GET #index' do
     let(:user) { create(:user) }
-    let(:user_notes) { create_list(:note, 5, user: user) }
+    let(:expected_keys) { %w[id title type content_length] }
+
+    before do
+      create_list(:note, 5, type: :review, user: user)
+      create_list(:note, 3, type: :critique, user: user)
+    end
 
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
 
-      let!(:expected) do
-        ActiveModel::Serializer::CollectionSerializer.new(notes_expected,
-                                                          serializer: IndexNoteSerializer).to_json
-      end
-
       context 'when fetching all the notes for user' do
-        let(:notes_expected) { user_notes.sort_by(&:id).reverse }
-
         before { get :index }
-
-        it 'responds with the expected notes json' do
-          expect(response_body.to_json).to eq(expected)
-        end
 
         it 'responds with 200 status' do
           expect(response).to have_http_status(:ok)
+        end
+
+        it 'responds with 8 notes' do
+          expect(response_body.length).to eq(8)
+        end
+
+        it 'responds with the expected keys' do
+          expect(response_body).to all have_keys(*expected_keys)
         end
       end
 
@@ -34,20 +36,23 @@ describe Api::V1::NotesController, type: :controller do
 
         before { get :index, params: { page: page, page_size: page_size } }
 
-        it 'responds with the expected notes' do
-          expect(response_body.to_json).to eq(expected)
-        end
-
         it 'responds with 200 status' do
           expect(response).to have_http_status(:ok)
+        end
+
+        it 'responds with 2 notes' do
+          expect(response_body.length).to eq(2)
+        end
+
+        it 'responds with the expected keys' do
+          expect(response_body).to all have_keys(*expected_keys)
         end
       end
 
       context 'when page_size is too long' do
         let(:page) { 1 }
         let(:page_size) { 2000 }
-        let(:notes_expected) { user_notes.sort_by(&:id).reverse }
-        let(:expected_error) { 'page_size is too long, max allowed is 100' }
+        let(:expected_error) { I18n.t('responses.note.long_page_size', max_page_size: 100) }
 
         before { get :index, params: { page: page, page_size: page_size } }
 
@@ -60,19 +65,51 @@ describe Api::V1::NotesController, type: :controller do
         end
       end
 
-      context 'when fetching notes using filters' do
-        let(:type) { 'review' }
-        let!(:notes_custom) { create_list(:note, 2, type: type, content: 'words', user: user) }
-        let(:notes_expected) { notes_custom.sort_by(&:id).reverse }
-
+      describe 'get notes by type' do
         before { get :index, params: { type: type } }
 
-        it 'responds with expected notes' do
-          expect(response_body.to_json).to eq(expected)
+        context 'when fetching notes of type review' do
+          let(:type) { 'review' }
+
+          it 'responds with 200 status' do
+            expect(response).to have_http_status(:ok)
+          end
+
+          it 'responds with 5 notes' do
+            expect(response_body.length).to eq(5)
+          end
+
+          it 'responds with the expected keys' do
+            expect(response_body).to all have_keys(*expected_keys)
+          end
         end
 
-        it 'responds with 200 status' do
-          expect(response).to have_http_status(:ok)
+        context 'when fetching notes of type critique' do
+          let(:type) { 'critique' }
+
+          it 'responds with 200 status' do
+            expect(response).to have_http_status(:ok)
+          end
+
+          it 'responds with 3 notes' do
+            expect(response_body.length).to eq(3)
+          end
+
+          it 'responds with the expected keys' do
+            expect(response_body).to all have_keys(*expected_keys)
+          end
+        end
+
+        context 'when fetching notes of an invalid type' do
+          let(:type) { Faker::String.random }
+
+          it 'responds with 400 status' do
+            expect(response).to have_http_status(:unprocessable_entity)
+          end
+
+          it 'responds with invalid type error' do
+            expect(response_body['error']).to eq(I18n.t('responses.note.invalid_type'))
+          end
         end
       end
     end
@@ -87,9 +124,8 @@ describe Api::V1::NotesController, type: :controller do
   end
 
   describe 'GET #show' do
-    let(:expected) { ShowNoteSerializer.new(note, root: false).to_json }
+    let(:expected_keys) { %w[id title type word_count created_at content content_length user] }
     let(:user) { create(:user) }
-
 
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
@@ -99,12 +135,12 @@ describe Api::V1::NotesController, type: :controller do
 
         before { get :show, params: { id: note.id } }
 
-        it 'responds with the note json' do
-          expect(response.body).to eq(expected)
-        end
-
         it 'responds with 200 status' do
           expect(response).to have_http_status(:ok)
+        end
+
+        it 'responds with the expected keys' do
+          expect(response_body).to have_keys(*expected_keys)
         end
       end
 

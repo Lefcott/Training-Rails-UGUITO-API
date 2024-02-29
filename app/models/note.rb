@@ -22,6 +22,10 @@ class Note < ApplicationRecord
 
   self.inheritance_column = :_type_disabled
 
+  scope :filtered, lambda { |filter_params, order, page, page_size|
+    where(filter_params).order(created_at: order).page(page).per(page_size)
+  }
+
   def word_count
     content.scan(/[\p{Alpha}\-']+/).length
   end
@@ -35,8 +39,6 @@ class Note < ApplicationRecord
   def validate_word_count
     invalid = content && content_length != 'short' && type == 'review'
     max_words = utility.short_content_length
-    return unless invalid
-    error_message = I18n.t('note.word_count_validation', max_words: max_words)
-    raise Exceptions::InvalidContentLengthError, error_message
+    errors.add :note, I18n.t('note.word_count_validation', max_words: max_words) if invalid
   end
 end
