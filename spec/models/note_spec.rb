@@ -61,7 +61,7 @@ RSpec.describe Note, type: :model do
       include_examples 'note_content_length', 100, %w[medium long]
     end
 
-    describe '#validate_word_count' do
+    describe 'saving a note' do
       context 'when the note is a review' do
         subject(:note) { build(:note, type: :review, utility: north_utility, content: content) }
 
@@ -132,7 +132,7 @@ RSpec.describe Note, type: :model do
       include_examples 'note_content_length', 120, %w[medium long]
     end
 
-    describe '#validate_word_count' do
+    describe 'saving a note' do
       context 'when the note is a review' do
         subject(:note) { build(:note, type: :review, utility: south_utility, content: content) }
 
