@@ -25,7 +25,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'responds with the expected keys' do
-          expect(response_body).to all have_keys(*expected_keys)
+          expect(response_body.map(&:keys)).to all contain_exactly(*expected_keys)
         end
       end
 
@@ -45,7 +45,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'responds with the expected keys' do
-          expect(response_body).to all have_keys(*expected_keys)
+          expect(response_body.map(&:keys)).to all contain_exactly(*expected_keys)
         end
       end
 
@@ -80,7 +80,7 @@ describe Api::V1::NotesController, type: :controller do
           end
 
           it 'responds with the expected keys' do
-            expect(response_body).to all have_keys(*expected_keys)
+            expect(response_body.map(&:keys)).to all contain_exactly(*expected_keys)
           end
         end
 
@@ -96,7 +96,7 @@ describe Api::V1::NotesController, type: :controller do
           end
 
           it 'responds with the expected keys' do
-            expect(response_body).to all have_keys(*expected_keys)
+            expect(response_body.map(&:keys)).to all contain_exactly(*expected_keys)
           end
         end
 
@@ -140,7 +140,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'responds with the expected keys' do
-          expect(response_body).to have_keys(*expected_keys)
+          expect(response_body.keys).to contain_exactly(*expected_keys)
         end
       end
 
