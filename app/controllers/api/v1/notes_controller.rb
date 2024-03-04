@@ -107,7 +107,7 @@ module Api
       end
 
       def invalid_note_type
-        !Note.types.keys.include? type
+        !Note.types.keys.include?(type)
       end
     end
   end
