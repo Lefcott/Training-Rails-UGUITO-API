@@ -1,6 +1,8 @@
 module Api
   module V1
     class NotesController < ApplicationController
+      before_action :authenticate_user!
+
       def index
         return render_long_page_size if invalid_page_size?
         return render_invalid_type if invalid_type?
@@ -14,11 +16,11 @@ module Api
       private
 
       def notes
-        Note.with_type(type, order).page(page).per(page_size)
+        current_user.notes.with_type(type, order).page(page).per(page_size)
       end
 
       def note
-        Note.find(params.require(:id))
+        current_user.notes.find(params.require(:id))
       end
 
       def type
