@@ -14,7 +14,7 @@ module Api
       private
 
       def notes
-        Note.filtered filter_params, order, page, page_size
+        Note.filtered(filter_params, order, page, page_size)
       end
 
       def filter_params
@@ -22,7 +22,7 @@ module Api
       end
 
       def note
-        Note.find params.require(:id)
+        Note.find(params.require(:id))
       end
 
       def type
