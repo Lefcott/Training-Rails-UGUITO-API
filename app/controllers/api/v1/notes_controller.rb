@@ -14,8 +14,8 @@ module Api
       end
 
       def create
-        return render_missing_params if missing_params
-        return render_invalid_type if invalid_note_type
+        return render_missing_params if missing_params?
+        return render_invalid_type if invalid_note_type?
         create_note
       end
 
@@ -42,7 +42,7 @@ module Api
       end
 
       def invalid_type?
-        type.present? && invalid_note_type
+        type.present? && invalid_note_type?
       end
 
       def order
@@ -102,11 +102,11 @@ module Api
         params.permit(:title, :type, :content)
       end
 
-      def missing_params
+      def missing_params?
         params[:title].blank? || params[:content].blank? || params[:type].blank?
       end
 
-      def invalid_note_type
+      def invalid_note_type?
         !Note.types.keys.include?(type)
       end
     end
