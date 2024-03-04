@@ -103,7 +103,12 @@ module Api
       end
 
       def missing_params?
-        params[:title].blank? || params[:content].blank? || params[:type].blank?
+        params.require(:title)
+        params.require(:content)
+        params.require(:type)
+        false
+      rescue ActionController::ParameterMissing
+        true
       end
 
       def invalid_note_type?
