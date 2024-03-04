@@ -22,6 +22,10 @@ class Note < ApplicationRecord
 
   self.inheritance_column = :_type_disabled
 
+  scope :with_type, lambda { |type, order|
+    where(with_type_filter(type)).order(created_at: order)
+  }
+
   def word_count
     content.scan(/[\p{Alpha}\-']+/).length
   end
@@ -36,5 +40,10 @@ class Note < ApplicationRecord
     invalid = content && content_length != 'short' && type == 'review'
     max_words = utility.short_content_length
     errors.add :note, I18n.t('note.word_count_validation', max_words: max_words) if invalid
+  end
+
+  def self.with_type_filter(type)
+    return {} if type.blank?
+    { type: type }
   end
 end
