@@ -20,7 +20,7 @@ module Api
       end
 
       def note
-        Note.find(params.require(:id))
+        current_user.notes.find(params.require(:id))
       end
 
       def type
