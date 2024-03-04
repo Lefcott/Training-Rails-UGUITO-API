@@ -29,7 +29,6 @@ describe Api::V1::NotesController, type: :controller do
     context 'when fetching notes with page and page size params' do
       let(:page) { 1 }
       let(:page_size) { 2 }
-      let(:notes_expected) { user_notes.sort_by(&:id).reverse.first 2 }
 
       before { get :index, params: { page: page, page_size: page_size } }
 
