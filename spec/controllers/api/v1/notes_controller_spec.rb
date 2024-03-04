@@ -186,7 +186,7 @@ describe Api::V1::NotesController, type: :controller do
       end
 
       context 'when a required parameter is missing' do
-        let(:title) { nil }
+        let(%i[title type content].sample) { nil }
 
         before { post :create, params: params }
 
