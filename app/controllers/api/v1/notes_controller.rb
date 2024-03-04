@@ -4,8 +4,8 @@ module Api
       before_action :authenticate_user!
 
       def index
-        return render_long_page_size if page_size.to_i > max_page_size
-        return render_invalid_type if type.present? && invalid_note_type
+        return render_long_page_size if invalid_page_size?
+        return render_invalid_type if invalid_type?
         render json: notes, status: :ok, each_serializer: BriefNoteSerializer
       end
 
@@ -30,19 +30,19 @@ module Api
       end
 
       def notes
-        Note.filtered filter_params, order, page, page_size
-      end
-
-      def filter_params
-        params.permit(%i[type]).merge user_id: current_user.id
+        current_user.notes.with_type(type, order).page(page).per(page_size)
       end
 
       def note
-        Note.find params.require(:id)
+        current_user.notes.find(params.require(:id))
       end
 
       def type
         params[:type]
+      end
+
+      def invalid_type?
+        type.present? && invalid_note_type
       end
 
       def order
@@ -55,6 +55,10 @@ module Api
 
       def page_size
         params[:page_size].presence || max_page_size
+      end
+
+      def invalid_page_size?
+        page_size.to_i > max_page_size
       end
 
       def max_page_size

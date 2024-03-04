@@ -105,7 +105,7 @@ describe Api::V1::NotesController, type: :controller do
         context 'when fetching notes of an invalid type' do
           let(:type) { Faker::String.random }
 
-          it 'responds with 400 status' do
+          it 'responds with 422 status' do
             expect(response).to have_http_status(:unprocessable_entity)
           end
 
