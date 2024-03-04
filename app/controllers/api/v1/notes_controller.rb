@@ -14,11 +14,7 @@ module Api
       private
 
       def notes
-        Note.filtered(filter_params, order, page, page_size)
-      end
-
-      def filter_params
-        params.permit %i[type]
+        Note.with_type(type, order).page(page).per(page_size)
       end
 
       def note
