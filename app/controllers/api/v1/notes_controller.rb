@@ -2,8 +2,8 @@ module Api
   module V1
     class NotesController < ApplicationController
       def index
-        return render_long_page_size if page_size.to_i > max_page_size
-        return render_invalid_type if type.present? && invalid_note_type
+        return render_long_page_size if invalid_page_size?
+        return render_invalid_type if invalid_type?
         render json: notes, status: :ok, each_serializer: BriefNoteSerializer
       end
 
@@ -29,6 +29,10 @@ module Api
         params[:type]
       end
 
+      def invalid_type?
+        type.present? && invalid_note_type
+      end
+
       def order
         params[:order].presence || :desc
       end
@@ -39,6 +43,10 @@ module Api
 
       def page_size
         params[:page_size].presence || max_page_size
+      end
+
+      def invalid_page_size?
+        page_size.to_i > max_page_size
       end
 
       def max_page_size
