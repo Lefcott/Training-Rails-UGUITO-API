@@ -167,10 +167,10 @@ describe Api::V1::NotesController, type: :controller do
     let(:title) { Faker::Book.title }
     let(:type) { :review }
     let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
+    let!(:note_count) { Note.count }
 
     context 'when there is a user logged in' do
       let(:params) { { title: title, type: type, content: content } }
-      let!(:note_count) { Note.count }
 
       include_context 'with authenticated user'
 
@@ -185,7 +185,7 @@ describe Api::V1::NotesController, type: :controller do
           expect(response_body['message']).to eq I18n.t('responses.note.created')
         end
 
-        it 'creates the note' do
+        it 'creates a note' do
           expect(Note.count).to eq(note_count + 1)
         end
 
@@ -206,6 +206,10 @@ describe Api::V1::NotesController, type: :controller do
         it 'responds with the expected error' do
           expect(response_body['error']).to eq I18n.t('responses.global.missing_required_params')
         end
+
+        it 'does not create a note' do
+          expect(Note.count).to eq(note_count)
+        end
       end
 
       context 'when sending an invalid type' do
@@ -219,6 +223,10 @@ describe Api::V1::NotesController, type: :controller do
 
         it 'responds with the expected error' do
           expect(response_body['error']).to eq I18n.t('responses.note.invalid_type')
+        end
+
+        it 'does not create a note' do
+          expect(Note.count).to eq(note_count)
         end
       end
 
@@ -234,6 +242,10 @@ describe Api::V1::NotesController, type: :controller do
         it 'responds with the expected error' do
           expect(response_body['error']).to include I18n.t('note.word_count_validation', max_words: utility.short_content_length)
         end
+
+        it 'does not create a note' do
+          expect(Note.count).to eq(note_count)
+        end
       end
     end
 
@@ -242,6 +254,10 @@ describe Api::V1::NotesController, type: :controller do
         before { post :create }
 
         it_behaves_like 'unauthorized'
+
+        it 'does not create a note' do
+          expect(Note.count).to eq(note_count)
+        end
       end
     end
   end
