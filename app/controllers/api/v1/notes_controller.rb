@@ -90,7 +90,7 @@ module Api
       end
 
       def create_note
-        current_user.notes.create! create_note_params
+        Note.create!(create_note_params.merge({ user_id: current_user.id }))
         render_created
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
