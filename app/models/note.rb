@@ -46,9 +46,4 @@ class Note < ApplicationRecord
     return {} if type.blank?
     { type: type }
   end
-
-  def self.with_type_filter(type)
-    return {} if type.blank?
-    { type: type }
-  end
 end
