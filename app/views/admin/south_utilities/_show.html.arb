@@ -19,6 +19,12 @@ panel 'Utility' do
     row :external_api_authentication_url do
       utility.external_api_authentication_url
     end
+    row :short_content_length do
+      utility.short_content_length
+    end
+    row :medium_content_length do
+      utility.medium_content_length
+    end
     row :books_data_url do
       utility.books_data_url
     end
