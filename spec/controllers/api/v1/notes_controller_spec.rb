@@ -170,6 +170,7 @@ describe Api::V1::NotesController, type: :controller do
 
     context 'when there is a user logged in' do
       let(:params) { { title: title, type: type, content: content } }
+      let!(:note_count) { Note.count }
 
       include_context 'with authenticated user'
 
@@ -182,6 +183,14 @@ describe Api::V1::NotesController, type: :controller do
 
         it 'responds with the expected message' do
           expect(response_body['message']).to eq I18n.t('responses.note.created')
+        end
+
+        it 'creates the note' do
+          expect(Note.count).to eq(note_count + 1)
+        end
+
+        it 'associates the user' do
+          expect(Note.last.user.id).to eq(user.id)
         end
       end
 
