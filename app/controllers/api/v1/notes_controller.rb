@@ -103,9 +103,7 @@ module Api
       end
 
       def missing_params?
-        params.require(:title)
-        params.require(:content)
-        params.require(:type)
+        %i[title content type].each { |param| params.require(param) }
         false
       rescue ActionController::ParameterMissing
         true
