@@ -25,10 +25,6 @@ module Api
         render json: { message: I18n.t('responses.note.created') }, status: :created
       end
 
-      def render_create_errors(note)
-        render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
-      end
-
       def notes
         current_user.notes.with_type(type, order).page(page).per(page_size)
       end
@@ -94,8 +90,6 @@ module Api
         render_created
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
-      rescue StandardError
-        render_create_errors(note)
       end
 
       def create_note_params
