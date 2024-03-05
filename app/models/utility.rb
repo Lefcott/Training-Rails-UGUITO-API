@@ -15,6 +15,8 @@
 #  jsonb                                :jsonb
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  short_content_length                 :integer          default(50)
+#  medium_content_length                :integer          default(100)
 #
 class Utility < ApplicationRecord
   include EntityWithCode
