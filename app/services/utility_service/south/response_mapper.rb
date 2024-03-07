@@ -40,8 +40,8 @@ module UtilityService
       def map_user(note)
         {
           email: note['EmailAutor'],
-          first_name: note['NombreCompletoAutor'].split(' ')[1],
-          last_name: note['NombreCompletoAutor'].split(' ')[0]
+          first_name: note['NombreCompletoAutor'].split(' ')[1..].join(' '),
+          last_name: note['NombreCompletoAutor'].split(' ').first
         }
       end
 
