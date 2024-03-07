@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://private-1971b-widergytrainingsouthutilityapi.apiary-mock.com/Notas?autor=Rodrigo%20Lugo%20Melgar
+    uri: https://private-1971b-widergytrainingsouthutilityapi.apiary-mock.com/Notas?Autor=Rodrigo%20Lugo%20Melgar
     body:
       encoding: US-ASCII
       string: ''
