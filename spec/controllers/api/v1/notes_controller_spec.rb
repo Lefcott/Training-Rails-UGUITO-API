@@ -167,7 +167,6 @@ describe Api::V1::NotesController, type: :controller do
     let(:title) { Faker::Book.title }
     let(:type) { :review }
     let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
-    let!(:note_count) { Note.count }
 
     context 'when there is a user logged in' do
       let(:params) { { title: title, type: type, content: content } }
@@ -208,7 +207,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'does not create a note' do
-          expect(Note.count).to eq(note_count)
+          expect { post :create, params: params }.not_to change(Note, :count)
         end
       end
 
@@ -226,7 +225,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'does not create a note' do
-          expect(Note.count).to eq(note_count)
+          expect { post :create, params: params }.not_to change(Note, :count)
         end
       end
 
@@ -244,7 +243,7 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'does not create a note' do
-          expect(Note.count).to eq(note_count)
+          expect { post :create, params: params }.not_to change(Note, :count)
         end
       end
     end
@@ -256,7 +255,7 @@ describe Api::V1::NotesController, type: :controller do
         it_behaves_like 'unauthorized'
 
         it 'does not create a note' do
-          expect(Note.count).to eq(note_count)
+          expect { post :create }.not_to change(Note, :count)
         end
       end
     end
