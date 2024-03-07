@@ -31,18 +31,26 @@ module UtilityService
             title: note['titulo'],
             type: note['tipo'],
             created_at: note['fecha_creacion'],
-            user: {
-              email: note['autor']['datos_de_contacto']['email'],
-              first_name: note['autor']['datos_personales']['nombre'],
-              last_name: note['autor']['datos_personales']['apellido']
-            },
-            book: {
-              title: note['libro']['titulo'],
-              author: note['libro']['autor'],
-              genre: note['libro']['genero']
-            }
+            user: map_user(note),
+            book: map_book(note)
           }
         end
+      end
+
+      def map_user(note)
+        {
+          email: note.dig('autor', 'datos_de_contacto', 'email'),
+          first_name: note.dig('autor', 'datos_personales', 'nombre'),
+          last_name: note.dig('autor', 'datos_personales', 'apellido')
+        }
+      end
+
+      def map_book(note)
+        {
+          title: note.dig('libro', 'titulo'),
+          author: note.dig('libro', 'autor'),
+          genre: note.dig('libro', 'genero')
+        }
       end
     end
   end
