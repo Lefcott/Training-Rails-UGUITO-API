@@ -186,11 +186,11 @@ describe Api::V1::NotesController, type: :controller do
         end
 
         it 'creates a note' do
-          expect(Note.count).to eq(note_count + 1)
+          expect { post :create, params: params }.to change(Note, :count).by(1)
         end
 
         it 'associates the user' do
-          expect(Note.last.user.id).to eq(user.id)
+          expect { post :create, params: params }.to change { user.notes.count }.by(1)
         end
       end
 
