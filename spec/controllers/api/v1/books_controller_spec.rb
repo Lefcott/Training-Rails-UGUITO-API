@@ -115,7 +115,10 @@ describe Api::V1::BooksController, type: :controller do
 
       before { get :index_async, params: params }
 
-      it_behaves_like 'async_request', 'RetrieveBooksWorker'
+      it_behaves_like 'async_request', 'RetrieveBooksWorker' do
+        let(:worker_name) { 'RetrieveBooksWorker' }
+        let(:parameters) { [user.id, params] }
+      end
     end
 
     context 'when the user is not authenticated' do
