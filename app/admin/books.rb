@@ -15,6 +15,7 @@ ActiveAdmin.register Book do
 
   filter :genre
   filter :author
+  filter :utility
   filter :title
   filter :publisher
   filter :year
