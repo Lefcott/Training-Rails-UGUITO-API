@@ -171,7 +171,10 @@ describe Api::V1::NotesController, type: :controller do
 
       before { get :index_async, params: params }
 
-      it_behaves_like 'async_request', 'RetrieveNotesWorker'
+      it_behaves_like 'async_request' do
+        let(:worker_name) { 'RetrieveNotesWorker' }
+        let(:parameters) { [user.id, params] }
+      end
     end
 
     context 'when the user is not authenticated' do
