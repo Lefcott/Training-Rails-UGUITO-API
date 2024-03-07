@@ -1,10 +1,12 @@
 ActiveAdmin.register Book do
   permit_params :genre, :author, :image, :title, :publisher, :year, :utility_id, :user_id
+  includes :utility
 
   index do
     selectable_column
     id_column
     column :genre
+    column :utility
     column :author
     column :image
     column :title
