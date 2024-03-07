@@ -49,7 +49,7 @@ module UtilityService
         {
           title: note.dig('libro', 'titulo'),
           author: note.dig('libro', 'autor'),
-          genre: note.dig('libro', 'genero')
+          genre: note.dig('libro', 'genero') || ''
         }
       end
     end
