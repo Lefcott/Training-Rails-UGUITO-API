@@ -1,6 +1,4 @@
-RSpec.shared_examples 'async_request' do |worker_name|
-  let(:parameters) { [user.id, params] }
-
+RSpec.shared_examples 'async_request' do
   it 'returns status code accepted' do
     expect(response).to have_http_status(:accepted)
   end
