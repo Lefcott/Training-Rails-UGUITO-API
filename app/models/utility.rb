@@ -15,6 +15,8 @@
 #  jsonb                                :jsonb
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  short_content_length                 :integer          default(50)
+#  medium_content_length                :integer          default(100)
 #
 class Utility < ApplicationRecord
   include EntityWithCode
@@ -26,8 +28,6 @@ class Utility < ApplicationRecord
 
   validates :name, uniqueness: true
   validates :name, :type, presence: true
-
-  attr_accessor :short_content_length, :medium_content_length
 
   store_accessor :integration_urls,
                  :external_api_authentication_url,
