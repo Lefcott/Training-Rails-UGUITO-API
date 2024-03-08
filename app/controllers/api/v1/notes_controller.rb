@@ -14,9 +14,11 @@ module Api
       end
 
       def create
-        return render_missing_params if missing_params?
+        check_missing_params
         return render_invalid_type if invalid_note_type?
         create_note
+      rescue ActionController::ParameterMissing
+        render_missing_params
       end
 
       def index_async
@@ -101,11 +103,16 @@ module Api
         params.permit(:title, :type, :content)
       end
 
+<<<<<<< HEAD
       def missing_params?
         params.require(%i[title content type])
         false
       rescue ActionController::ParameterMissing
         true
+=======
+      def check_missing_params
+        params.require(%i[title content type])
+>>>>>>> master
       end
 
       def invalid_note_type?
