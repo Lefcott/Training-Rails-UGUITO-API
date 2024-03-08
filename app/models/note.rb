@@ -39,7 +39,7 @@ class Note < ApplicationRecord
   def validate_word_count
     invalid = content && content_length != 'short' && type == 'review'
     max_words = utility.short_content_length
-    errors.add :note, I18n.t('note.word_count_validation', max_words: max_words) if invalid
+    errors.add :content, I18n.t('note.word_count_validation', max_words: max_words) if invalid
   end
 
   def self.with_type_filter(type)

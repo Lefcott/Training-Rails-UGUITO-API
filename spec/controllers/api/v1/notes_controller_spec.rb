@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 describe Api::V1::NotesController, type: :controller do
+  let(:user) { create(:user) }
+  let(:utility) { user.utility }
+
   describe 'GET #index' do
-    let(:user) { create(:user) }
     let(:expected_keys) { %w[id title type content_length] }
 
     before do
@@ -52,7 +54,7 @@ describe Api::V1::NotesController, type: :controller do
       context 'when page_size is too long' do
         let(:page) { 1 }
         let(:page_size) { 2000 }
-        let(:expected_error) { 'page_size is too long, max allowed is 100' }
+        let(:expected_error) { I18n.t('responses.note.long_page_size', max_page_size: 100) }
 
         before { get :index, params: { page: page, page_size: page_size } }
 
@@ -108,7 +110,7 @@ describe Api::V1::NotesController, type: :controller do
           end
 
           it 'responds with invalid type error' do
-            expect(response_body['error']).to eq("invalid type #{type}")
+            expect(response_body['error']).to eq(I18n.t('responses.note.invalid_type'))
           end
         end
       end
@@ -125,7 +127,6 @@ describe Api::V1::NotesController, type: :controller do
 
   describe 'GET #show' do
     let(:expected_keys) { %w[id title type word_count created_at content content_length user] }
-    let(:user) { create(:user) }
 
     context 'when there is a user logged in' do
       include_context 'with authenticated user'
@@ -158,6 +159,104 @@ describe Api::V1::NotesController, type: :controller do
         before { get :show, params: { id: Faker::Number.number } }
 
         it_behaves_like 'unauthorized'
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    let(:title) { Faker::Book.title }
+    let(:type) { :review }
+    let(:content) { Faker::Lorem.paragraphs(number: 3).join("\n") }
+
+    context 'when there is a user logged in' do
+      let(:params) { { title: title, type: type, content: content } }
+
+      include_context 'with authenticated user'
+
+      context 'when creating a valid note' do
+        before { post :create, params: params }
+
+        it 'responds with 201 status' do
+          expect(response).to have_http_status :created
+        end
+
+        it 'responds with the expected message' do
+          expect(response_body['message']).to eq I18n.t('responses.note.created')
+        end
+
+        it 'creates a note' do
+          expect { post :create, params: params }.to change(Note, :count).by(1)
+        end
+
+        it 'associates the user' do
+          expect { post :create, params: params }.to change { user.notes.count }.by(1)
+        end
+      end
+
+      context 'when a required parameter is missing' do
+        let(%i[title type content].sample) { nil }
+
+        before { post :create, params: params }
+
+        it 'responds with 400 status' do
+          expect(response).to have_http_status :bad_request
+        end
+
+        it 'responds with the expected error' do
+          expect(response_body['error']).to eq I18n.t('responses.global.missing_required_params')
+        end
+
+        it 'does not create a note' do
+          expect { post :create, params: params }.not_to change(Note, :count)
+        end
+      end
+
+      context 'when sending an invalid type' do
+        let(:type) { :invalid_type }
+
+        before { post :create, params: params }
+
+        it 'responds with 400 status' do
+          expect(response).to have_http_status :unprocessable_entity
+        end
+
+        it 'responds with the expected error' do
+          expect(response_body['error']).to eq I18n.t('responses.note.invalid_type')
+        end
+
+        it 'does not create a note' do
+          expect { post :create, params: params }.not_to change(Note, :count)
+        end
+      end
+
+      context 'when creating a note with a large content' do
+        let(:content) { 'word ' * 100 }
+
+        before { post :create, params: params }
+
+        it 'responds with 422 status' do
+          expect(response).to have_http_status :unprocessable_entity
+        end
+
+        it 'responds with the expected error' do
+          expect(response_body['error']).to include I18n.t('note.word_count_validation', max_words: utility.short_content_length)
+        end
+
+        it 'does not create a note' do
+          expect { post :create, params: params }.not_to change(Note, :count)
+        end
+      end
+    end
+
+    context 'when there is no user logged in' do
+      context 'when creating a note' do
+        before { post :create }
+
+        it_behaves_like 'unauthorized'
+
+        it 'does not create a note' do
+          expect { post :create }.not_to change(Note, :count)
+        end
       end
     end
   end
