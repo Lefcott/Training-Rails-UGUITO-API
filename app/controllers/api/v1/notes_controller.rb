@@ -103,16 +103,8 @@ module Api
         params.permit(:title, :type, :content)
       end
 
-<<<<<<< HEAD
-      def missing_params?
-        params.require(%i[title content type])
-        false
-      rescue ActionController::ParameterMissing
-        true
-=======
       def check_missing_params
         params.require(%i[title content type])
->>>>>>> master
       end
 
       def invalid_note_type?
