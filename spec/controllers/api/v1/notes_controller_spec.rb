@@ -163,6 +163,27 @@ describe Api::V1::NotesController, type: :controller do
     end
   end
 
+  describe 'GET #index_async' do
+    context 'when the user is authenticated' do
+      include_context 'with authenticated user'
+
+      let(:params) { { author: Faker::Book.author } }
+
+      before { get :index_async, params: params }
+
+      it_behaves_like 'async_request' do
+        let(:worker_name) { 'RetrieveNotesWorker' }
+        let(:parameters) { [user.id, params] }
+      end
+    end
+
+    context 'when the user is not authenticated' do
+      before { get :index_async }
+
+      it_behaves_like 'unauthorized'
+    end
+  end
+
   describe 'POST #create' do
     let(:title) { Faker::Book.title }
     let(:type) { :review }

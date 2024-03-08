@@ -18,7 +18,11 @@ Rails.application.routes.draw do
         get :async, to: 'books#index_async'
       end
     end
-    resources :notes, only: %i[index show create]
+    resources :notes, only: %i[index show create] do
+      collection do
+        get :async, to: 'notes#index_async'
+      end
+    end
     resource :users do
       get :current
     end
@@ -104,6 +108,7 @@ end
 #                 async_api_v1_books GET        /api/v1/books/async(.:format)                                                                     api/v1/books#index_async {:format=>:json}
 #                       api_v1_books GET        /api/v1/books(.:format)                                                                           api/v1/books#index {:format=>:json}
 #                        api_v1_book GET        /api/v1/books/:id(.:format)                                                                       api/v1/books#show {:format=>:json}
+#                 async_api_v1_notes GET        /api/v1/notes/async(.:format)                                                                     api/v1/notes#index_async {:format=>:json}
 #                       api_v1_notes GET        /api/v1/notes(.:format)                                                                           api/v1/notes#index {:format=>:json}
 #                                    POST       /api/v1/notes(.:format)                                                                           api/v1/notes#create {:format=>:json}
 #                        api_v1_note GET        /api/v1/notes/:id(.:format)                                                                       api/v1/notes#show {:format=>:json}

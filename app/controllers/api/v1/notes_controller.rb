@@ -21,6 +21,11 @@ module Api
         render_missing_params
       end
 
+      def index_async
+        response = execute_async(RetrieveNotesWorker, current_user.id, index_async_params)
+        async_custom_response(response)
+      end
+
       private
 
       def render_created
@@ -98,12 +103,24 @@ module Api
         params.permit(:title, :type, :content)
       end
 
+<<<<<<< HEAD
+      def missing_params?
+        params.require(%i[title content type])
+        false
+      rescue ActionController::ParameterMissing
+        true
+=======
       def check_missing_params
         params.require(%i[title content type])
+>>>>>>> master
       end
 
       def invalid_note_type?
         !Note.types.keys.include?(type)
+      end
+
+      def index_async_params
+        { author: params.require(:author) }
       end
     end
   end
